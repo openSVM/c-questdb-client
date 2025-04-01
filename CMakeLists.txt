@@ -191,4 +191,45 @@ if (QUESTDB_TESTS_AND_EXAMPLES)
             system_test PROPERTIES
             ENVIRONMENT BUILD_DIR_PATH=${CMAKE_BINARY_DIR})
     endif(QUESTDB_SYSTEM_TESTING)
+
+    # Zig client
+    option(QUESTDB_ZIG_CLIENT "Build Zig client" OFF)
+
+    if (QUESTDB_ZIG_CLIENT)
+        find_program(ZIG_EXECUTABLE zig)
+        if(NOT ZIG_EXECUTABLE)
+            message(FATAL_ERROR "Zig executable not found. Please install Zig or disable QUESTDB_ZIG_CLIENT.")
+        endif()
+        
+        # Get Zig version
+        execute_process(
+            COMMAND ${ZIG_EXECUTABLE} version
+            OUTPUT_VARIABLE ZIG_VERSION
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        message(STATUS "Found Zig: ${ZIG_EXECUTABLE} (version: ${ZIG_VERSION})")
+        
+        # Add custom target for building the Zig client
+        add_custom_target(zig_client
+            COMMAND ${ZIG_EXECUTABLE} build
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/zig-client
+            COMMENT "Building Zig client"
+        )
+        
+        # Add custom target for testing the Zig client
+        add_custom_target(zig_client_test
+            COMMAND ${ZIG_EXECUTABLE} build test
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/zig-client
+            COMMENT "Testing Zig client"
+        )
+        
+        # Add test for the Zig client
+        if (QUESTDB_TESTS_AND_EXAMPLES)
+            add_test(
+                NAME zig_tests
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/zig-client
+                COMMAND ${ZIG_EXECUTABLE} build test
+            )
+        endif()
+    endif()
 endif()

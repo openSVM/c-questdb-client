@@ -57,6 +57,10 @@ To get started, read the language-specific guides.
 * [`questdb-rs` source code](questdb-rs)
 * [`questdb-rs-ffi` source code](questdb-rs-ffi) - C bindings code
 
+**Zig**
+* [Getting started with Zig](doc/Zig.md)
+* [Zig client source code](zig-client)
+
 **Python**
 * [Python GitHub Repo](https://github.com/questdb/py-questdb-client/)
 * [`questdb` package on PyPI](https://pypi.org/project/questdb/)
